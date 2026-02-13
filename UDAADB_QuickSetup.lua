@@ -11,7 +11,7 @@ Conf = io.read()
 
 if Conf == 'Y' or Conf == 'y' or Conf == 'YES' or Conf == 'Yes' or Conf == 'yes' then
     print('Installation Comfirmed, Attempting to Install')
-    os.execute('mkdir '..path..' && echo > ',path)
+    os.execute('mkdir '..path..' && echo > '..path)
     os.execute('wget -P '..path..' raw.githubusercontent.com/N-Plasma/TIoS_UDAADB/refs/heads/main/UDAADB_Core.py')
     os.execute('wget -P '..path..' raw.githubusercontent.com/N-Plasma/TIoS_UDAADB/refs/heads/main/UDAADB_Func.py')
     os.execute('wget -P '..path..' raw.githubusercontent.com/N-Plasma/TIoS_UDAADB/refs/heads/main/UDAADB_Ver.txt')

@@ -60,9 +60,11 @@ def RankCalc(ownrank,comparedrank):
     elif ownrank>comparedrank:
         return(True)
     
-def makeusr(id,user,display,role,rank):
+def makeusr(id,user,display,role,rank,own_id):
     users.insert_one({'user':user,'name':display,'id':id,'role':role,'rank':rank,'note':'no note'})
     currency.insert_one({'id':id,'xp':0,'money':0})
+    print(own_id,' created user entry. ID : ',id,' Username : ',user,' Display Name : ',display,' Role : ',role,' Rank : ',rank)
+    logging.INFO(own_id,' created user entry. ID : ',id,' Username : ',user,' Display Name : ',display,' Role : ',role,' Rank : ',rank)
 
 #Basic Functions
 def OnJoin(id,user,display):
