@@ -1,6 +1,7 @@
 import UDAADB_Func
 from typing import Optional
 import logging
+import logging.handlers
 import subprocess
 import time
 import discord
@@ -10,10 +11,13 @@ import os
 from os import load_dotenv
 from pymongo.mongo_client import MongoClient
 
+logger = logging.getLogger('logging.log').setLevel(logging.INFO)
+logger.setLevel(logging.DEBUG)
+
 class Client(commands.Bot):
     async def on_ready(self):
         print('Logged on as ',self.user)
-        logging.INFO('Logged on as ',self.user)
+        logger.INFO('Logged on as ',self.user)
 
 intents = discord.Intents.all()
 client = Client(command_prefix='*',intents=intents)
@@ -23,12 +27,10 @@ db = monclient.UDAADB
 users = db.users
 incidentreports = db.incidents
 
-load_dotenv()
-token = os.getenv('token')
-UDAADB_Func.UpdateCheck()
+token = '[Insert Discord Bot Token here]'
+# [Currently Broken] - UDAADB_Func.UpdateCheck()
 
-logging.basicConfig(level=logging.INFO)
-logging.INFO('UDAADB_Core PreSetup Completed')
+logger.INFO('UDAADB_Core PreSetup Completed')
 print('UDAADB_Core PreSetup Completed')
 
 @client.tree.command(name='ping database',description='Pings Connected Database')

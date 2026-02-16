@@ -1,12 +1,15 @@
 #Setup
 import time
-import fs
 import logging
+import logging.handlers
 import subprocess
 from pymongo.mongo_client import MongoClient
 import os
 from os import load_dotenv
 load_dotenv()
+
+logger = logging.getLogger('logging.log').setLevel(logging.INFO)
+logger.setLevel(logging.DEBUG)
 
 client = MongoClient('localhost', 27017)
 db = client.UDAADB
@@ -20,11 +23,11 @@ def dbping():
     pingres = client.admin.command("ping")
     if pingres.get('ok') == 1.0:
         print('Ping Success')
-        logging.INFO('Ping Success')
+        logger.INFO('Ping Success')
         return('Ping Responded')
     else:
         print('!! Ping Failure')
-        logging.WARN('Ping Failure')
+        logger.WARN('Ping Failure')
         return('Ping Failed')
 
 def UpdateCheck():
@@ -64,59 +67,59 @@ def makeusr(id,user,display,role,rank,own_id):
     users.insert_one({'user':user,'name':display,'id':id,'role':role,'rank':rank,'note':'no note'})
     currency.insert_one({'id':id,'xp':0,'money':0})
     print(own_id,' created user entry. ID : ',id,' Username : ',user,' Display Name : ',display,' Role : ',role,' Rank : ',rank)
-    logging.INFO(own_id,' created user entry. ID : ',id,' Username : ',user,' Display Name : ',display,' Role : ',role,' Rank : ',rank)
+    logger.INFO(own_id,' created user entry. ID : ',id,' Username : ',user,' Display Name : ',display,' Role : ',role,' Rank : ',rank)
 
 #Basic Functions
 def OnJoin(id,user,display):
-    logging.INFO('User Joined, id : ',id,' Username : ',user,' Displayname : ',display)
+    logger.INFO('User Joined, id : ',id,' Username : ',user,' Displayname : ',display)
     print('User Joined, id : ',id,' Username : ',user,' Displayname : ',display)
     if users.find_one({"id":id}) == True:
         print('User is already in Database')
-        logging.INFO('User is already in Database')
+        logger.INFO('User is already in Database')
     else:
         print('User not in Database, Creating entries')
-        logging.INFO('User not in Database, Creating entries')
+        logger.INFO('User not in Database, Creating entries')
         makeusr(id,user,display)
 
 def OnLeave(id,user,display):
-    logging.INFO('User left, id : ',id,' Username : ',user,' Displayname : ',display)
+    logger.INFO('User left, id : ',id,' Username : ',user,' Displayname : ',display)
     print('User left, id : ',id,' Username : ',user,' Displayname : ',display)
 
 def ManipulateUserEntry(own_id,own_rank,source_id,source_rank,user_to,display_to,role_to,rank_to,note_to):
-    logging.INFO('User Entry Manipulation Started by ',own_id,' Fetching manipulated Data...')
+    logger.INFO('User Entry Manipulation Started by ',own_id,' Fetching manipulated Data...')
     print('User Entry Manipulation Started by ',own_id,' Fetching manipulated Data...')
 
     if source_id == None or own_id == None or source_rank == None or own_rank == None or users.find_one({"id":source_id}) == False:
         print('User Entry Manipulation Canceled - Incomplete Command')
-        logging.INFO('User Entry Manipulation Canceled - Incomplete Command')
+        logger.INFO('User Entry Manipulation Canceled - Incomplete Command')
         Response = ('User Entry Manipulation Canceled - Incomplete Command')
     
     elif RankCalc(own_rank,source_rank) == False or RankCalc(own_rank, rank_to) == False:
         print('User Entry Manipulation Canceled - User who ran command has too low of a role, user is ',own_id,' ',own_rank,' source is ',source_id,source_rank)
-        logging.INFO('User Entry Manipulation Canceled - User who ran command has too low of a role, user is ',own_id,' ',own_rank,' source is ',source_id,' ',source_rank)
+        logger.INFO('User Entry Manipulation Canceled - User who ran command has too low of a role, user is ',own_id,' ',own_rank,' source is ',source_id,' ',source_rank)
         Response = ('You are too low ranked to perform this action.')
     else:
         print('Checks passed, Changing the following for ',source_id)
-        logging.INFO('Checks passed, Changing the following for ',source_id)
+        logger.INFO('Checks passed, Changing the following for ',source_id)
         if user_to != None:
             print('User To : ',user_to)
-            logging.INFO('User To : ',user_to)
+            logger.INFO('User To : ',user_to)
             users.update_one({'id':source_id},{})
         if display_to != None:
             print('Display To : ',display_to)
-            logging.INFO('Display To : ',display_to)
+            logger.INFO('Display To : ',display_to)
             users.update_one({'id':source_id},{})
         if role_to != None:
             print('Role To : ',role_to)
-            logging.INFO('Role To : ',role_to)
+            logger.INFO('Role To : ',role_to)
             users.update_one({'id':source_id},{})
         if rank_to != None:
             print('Rank To : ',rank_to)
-            logging.INFO('Rank To : ',rank_to)
+            logger.INFO('Rank To : ',rank_to)
             users.update_one({'id':source_id},{})
         if note_to != None:
             print('Note To : ',note_to)
-            logging.INFO('Note To : ',note_to)
+            logger.INFO('Note To : ',note_to)
             users.update_one({'id':source_id},{})
             Response = 'Entry Updated'
     return(Response)
@@ -132,7 +135,7 @@ def xpauto(event,id,own_id):
         xp_out = xp + event_conv
         currency.update_one({'id':id},{'xp':xp_out})
         print(own_id,' set ',id,'s XP to ',xp_out)
-        logging.INFO(own_id,' set ',id,'s XP to ',xp_out)
+        logger.INFO(own_id,' set ',id,'s XP to ',xp_out)
 
 def curedit(id,own_id,cur,select,amount):
     ceget = currency.find_one({"id":id})
@@ -154,29 +157,29 @@ def curedit(id,own_id,cur,select,amount):
             amount_cur = amount
             currency.update_one({'id':id}, {cur:amount_cur})
             print(own_id,'Changed ',id,'s ',cur,' to ',amount_cur)
-            logging.INFO(own_id,' Changed ',id,'s ',cur,' to ',amount_cur)
+            logger.INFO(own_id,' Changed ',id,'s ',cur,' to ',amount_cur)
 
 def inciedit(name,name_to,public_to,involved_to,body_to,own_id):
     inciget = incidentreports.find_one({'name':name})
     if inciget != None and own_id != None:
         if name_to != None or public_to != None or involved_to != None or body_to != None:
             print(own_id,' edited entry ',name,' with the following')
-            logging.INFO(own_id,' edited entry ',name,' with the following')
+            logger.INFO(own_id,' edited entry ',name,' with the following')
             if name_to != None:
                 print('Name To : ',name_to)
-                logging.INFO('Name To : ',name_to)
+                logger.INFO('Name To : ',name_to)
                 incidentreports.update_one({'name':name},{'name':name_to})
             if public_to != None:
                 print('Public To : ',public_to)
-                logging.INFO('Public To : ',public_to)
+                logger.INFO('Public To : ',public_to)
                 incidentreports.update_one({'name':name},{'public':public_to})
             if involved_to != None:
                 print('Involved To : ',involved_to)
-                logging.INFO('Involved To : ',involved_to)
+                logger.INFO('Involved To : ',involved_to)
                 incidentreports.update_one({'name':name},{'involved':involved_to})
             if body_to != None:
                 print('Body To : ',body_to)
-                logging.INFO('Body To : ',body_to)
+                logger.INFO('Body To : ',body_to)
                 incidentreports.update_one({'name':name},{'body':body_to})
 
 def xpview(id, own_id):
@@ -184,21 +187,21 @@ def xpview(id, own_id):
     if xpget != None and own_id != None:
         xp = xpget[2]
         print(own_id,' read XP of ',id)
-        logging.INFO(own_id,' read XP of ',id)
+        logger.INFO(own_id,' read XP of ',id)
         return(xp)
     else: return('Entry Not Found')
 
 def incimake(name,public,involved,body,own_id):
     if name != None and public != None and involved != None and body != None and own_id != None:
         print('Incident report created with the following information, Name : ',name,' Is Public? : ',public,' Involved : ',involved,' Body : ',body)
-        logging.INFO('Incident report created by ',own_id,' with the following information, Name : ',name,' Is Public? : ',public,' Involved : ',involved,' Body : ',body)
+        logger.INFO('Incident report created by ',own_id,' with the following information, Name : ',name,' Is Public? : ',public,' Involved : ',involved,' Body : ',body)
         incidentreports.insert_one({'name':name,'public':public,'involved':involved,'body':body})
 
 def inciread(repname,own_id):
     inci = incidentreports.find_one({'name':repname})
     if inci != None and own_id != None:
         print(own_id,' read incident log ',repname)
-        logging.INFO(own_id,' read incident log ',repname)
+        logger.INFO(own_id,' read incident log ',repname)
         return(inci)
     else: return('Entry Not Found')
 
@@ -206,7 +209,7 @@ def userread(id,own_id):
     usr = users.find_one({'id':id})
     if usr != None and own_id != None:
         print(own_id,' read user entry of ',id)
-        logging.INFO(own_id,' read user entry of ',id)
+        logger.INFO(own_id,' read user entry of ',id)
         return(usr)
     else: return('Entry Not Found')
 
@@ -214,7 +217,7 @@ def curread(id,own_id):
     cur = currency.find_one({'id':id})
     if cur != None and own_id != None:
         print(own_id,' read currency entry of ',id)
-        logging.INFO(own_id,' read currency entry of ',id)
+        logger.INFO(own_id,' read currency entry of ',id)
         return(cur)
     else: return('Entry Not Found')
 
