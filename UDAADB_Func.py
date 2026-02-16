@@ -5,8 +5,6 @@ import logging.handlers
 import subprocess
 from pymongo.mongo_client import MongoClient
 import os
-from os import load_dotenv
-load_dotenv()
 
 logger = logging.getLogger('logging.log').setLevel(logging.INFO)
 logger.setLevel(logging.DEBUG)

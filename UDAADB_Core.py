@@ -8,7 +8,6 @@ import discord
 from discord.ext import commands
 from discord import app_commands
 import os
-from os import load_dotenv
 from pymongo.mongo_client import MongoClient
 
 logger = logging.getLogger('logging.log').setLevel(logging.INFO)
