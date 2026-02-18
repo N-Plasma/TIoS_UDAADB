@@ -10,13 +10,22 @@ from discord import app_commands
 import os
 from pymongo.mongo_client import MongoClient
 
-logger = logging.getLogger('logging.log').setLevel(logging.INFO)
-logger.setLevel(logging.DEBUG)
+logging.basicConfig(
+    filename='logging.log',
+    filemode='w',
+    encoding='utf-8',
+    level=logging.INFO,
+    format='%(levelname)s:%(asctime)s:%(funcName)s: %(message)s',
+    datefmt='%H:%M:%S'
+)
+logger = logging.getLogger(__name__)
+
+
 
 class Client(commands.Bot):
     async def on_ready(self):
         print('Logged on as ',self.user)
-        logger.INFO('Logged on as ',self.user)
+        logger.info('Logged on as ',self.user)
 
 intents = discord.Intents.all()
 client = Client(command_prefix='*',intents=intents)
@@ -29,7 +38,7 @@ incidentreports = db.incidents
 token = '[Insert Discord Bot Token here]'
 # [Currently Broken] - UDAADB_Func.UpdateCheck()
 
-logger.INFO('UDAADB_Core PreSetup Completed')
+logger.info('UDAADB_Core PreSetup Completed')
 print('UDAADB_Core PreSetup Completed')
 
 @client.tree.command(name='ping database',description='Pings Connected Database')
