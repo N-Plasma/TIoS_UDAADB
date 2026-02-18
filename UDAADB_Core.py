@@ -27,8 +27,9 @@ logger = logging.getLogger(__name__)
 
 class Client(commands.Bot):
     async def on_ready(self):
-        print('Logged on as ',self.user)
-        logger.info('Logged on as ',self.user)
+        print('Logged on as [Currently Broken]')
+        logger.info('Logged on as [Currently Broken]')
+
 
 intents = discord.Intents.all()
 client = Client(command_prefix='*',intents=intents)
@@ -45,16 +46,16 @@ logger.info('UDAADB_Core PreSetup Completed')
 print('UDAADB_Core PreSetup Completed')
 
 @client.command()
-async def sync(ctx: commands.Context):
-    id = discord.User.id
-    if id in DeltaID:
+async def sync(ctx: commands.Context, user: discord.User):
+    sender = user.id
+    if sender in DeltaID:
         await ctx.bot.tree.sync(guild=ctx.guild)
-        print(id,' Synced Commands')
-        logger.info(id,' Synced Commands')
+        print(sender,' Synced Commands')
+        logger.info(sender,' Synced Commands')
         await ctx.send('Synced',ephemeral=True)
     else:
-        print(id,' Failed to Sync Commands (Low Rank)')
-        logger.info(id,' Failed to Sync Commands (Low Rank)')
+        print(sender,' Failed to Sync Commands (Low Rank)')
+        logger.info(sender,' Failed to Sync Commands (Low Rank)')
         await ctx.send('Failed, You are not ranked high enough to sync',ephemeral=True)
 
 @client.tree.command(name='ping_database',description='Pings Connected Database')
