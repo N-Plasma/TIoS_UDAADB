@@ -15,10 +15,10 @@ if Conf == 'Y' or Conf == 'y' or Conf == 'YES' or Conf == 'Yes' or Conf == 'yes'
     os.execute('wget -P '..path..' raw.githubusercontent.com/N-Plasma/TIoS_UDAADB/refs/heads/main/UDAADB_Core.py')
     os.execute('wget -P '..path..' raw.githubusercontent.com/N-Plasma/TIoS_UDAADB/refs/heads/main/UDAADB_Func.py')
     os.execute('wget -P '..path..' raw.githubusercontent.com/N-Plasma/TIoS_UDAADB/refs/heads/main/UDAADB_Ver.txt')
-    os.execute('pip install dnspython')
     os.execute('python3 -m venv venv')
     os.execute('source venv/bin/activate')
-    os.execute('python -m pip install "pymongo[srv]')
+    os.execute('pip install dnspython')
+    os.execute('python -m pip install "pymongo[srv]"')
     print('Installation Complete')
 elseif Conf == 'x' or Conf == 'X' then
     print ('UDAADB Reinstallation confirmed, make sure to check changelogs if anything stops working')

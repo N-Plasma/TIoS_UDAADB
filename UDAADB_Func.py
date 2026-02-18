@@ -5,8 +5,6 @@ import logging.handlers
 import subprocess
 from pymongo.mongo_client import MongoClient
 import os
-from os import load_dotenv
-load_dotenv()
 
 logging.basicConfig(
     filename='logging.log',
@@ -38,7 +36,7 @@ def dbping():
         return('Ping Failed')
 
 def UpdateCheck():
-    subprocess.call('wget -P ~/N_Plasa.DEV/UDAADB -O GitVer.txt raw.githubusercontent.com/N-Plasma/TIoS_UDAADB/refs/heads/main/UDAADB_Ver.txt')
+    subprocess.run('wget -P ~/N_Plasa.DEV/UDAADB -O GitVer.txt raw.githubusercontent.com/N-Plasma/TIoS_UDAADB/refs/heads/main/UDAADB_Ver.txt')
     
     with open('GitVer.txt', 'r') as file:
         GitVer = file.read().rstrip()
@@ -48,7 +46,7 @@ def UpdateCheck():
 
     if LocalVer != GitVer:
         print('UDAADB Version Outdated, run Quick Setup and confirm with "x" to reinstall')
-    subprocess.call('rm ~/N_Plasma.DEV/UDAADB/GitVer.txt')
+    subprocess.run('rm ~/N_Plasma.DEV/UDAADB/GitVer.txt')
 
 def RankCalc(ownrank,comparedrank):
     if ownrank == ranks[1]: ownrank = 1
