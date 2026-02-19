@@ -84,7 +84,7 @@ def OnJoin(id,user,display):
     else:
         print('User not in Database, Creating entries')
         logger.info('User not in Database, Creating entries')
-        makeusr(id,user,display)
+        makeusr(id,user,display,'Drone','L1','OnJoin Func')
 
 def OnLeave(id,user,display):
     logger.info('User left, id : ',id,' Username : ',user,' Displayname : ',display)
